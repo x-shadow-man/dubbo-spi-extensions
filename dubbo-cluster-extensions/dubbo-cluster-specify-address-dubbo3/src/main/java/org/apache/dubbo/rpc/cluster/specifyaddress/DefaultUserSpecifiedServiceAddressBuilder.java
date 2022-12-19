@@ -75,7 +75,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
         if (useFixed) {
             String ip = address.getIp();
             int port = address.getPort();
-            String protocol = consumerUrl.getParameter(PROTOCOL_KEY, DUBBO);
+            String protocol = DUBBO;
             if (port == 0) {
                 port = protocolExtensionLoader.getExtension(protocol).getDefaultPort();
             }

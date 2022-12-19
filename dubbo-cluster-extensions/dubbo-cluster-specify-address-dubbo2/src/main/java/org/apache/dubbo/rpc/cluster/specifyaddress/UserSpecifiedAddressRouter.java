@@ -247,15 +247,15 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
             if (port == 0) {
                 port = ExtensionLoader.getExtensionLoader(Protocol.class).getDefaultExtension().getDefaultPort();
             }
-            return copyConsumerUrl(consumerUrl, ip, port, new HashMap<>());
+            return copyConsumerUrl(DUBBO,consumerUrl, ip, port, new HashMap<>());
         }
     }
 
-    private URL copyConsumerUrl(URL url, String ip, int port, Map<String, String> parameters) {
+    private URL copyConsumerUrl(String protocol, URL url, String ip, int port, Map<String, String> parameters) {
         return URLBuilder.from(url)
                 .setHost(ip)
                 .setPort(port)
-                .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
+                .setProtocol(protocol)
                 .setPath(url.getPath())
                 .clearParameters()
                 .addParameters(parameters)
@@ -264,12 +264,13 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     public URL rebuildAddress(Address address, URL consumerUrl) {
-        URL url = (URL) address.getUrlAddress();
+        URL url = address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));
         parameters.put(GROUP_KEY, consumerUrl.getParameter(GROUP_KEY));
+        String protocol = StringUtils.isEmpty(url.getProtocol()) ? DUBBO : url.getProtocol();
         parameters.putAll(consumerUrl.getParameters());
-        return copyConsumerUrl(consumerUrl, url.getHost(), url.getPort(),parameters);
+        return copyConsumerUrl(protocol,consumerUrl, url.getHost(), url.getPort(),parameters);
     }
 
     private Invoker<T> getOrBuildInvokerCache(URL url) {
