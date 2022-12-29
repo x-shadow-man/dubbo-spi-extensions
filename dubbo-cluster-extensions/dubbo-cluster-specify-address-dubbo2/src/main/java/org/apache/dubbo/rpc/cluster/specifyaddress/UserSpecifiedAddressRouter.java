@@ -248,7 +248,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
             if (port == 0) {
                 port = ExtensionLoader.getExtensionLoader(Protocol.class).getDefaultExtension().getDefaultPort();
             }
-            return copyConsumerUrl(consumerUrl, ip, port, new HashMap<>());
+            return copyConsumerUrl(consumerUrl, ip, port, consumerUrl.getParameters());
         }
     }
 
